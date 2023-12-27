@@ -19,12 +19,12 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly ITeacherRepository _iTeacherRepository;
 
-        public FSNStudentController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository)
+        public FSNStudentController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClassRepository iClazzRepository, IGradeRepository iGradeRepository, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -65,11 +65,11 @@ namespace Student.Achieve.Controllers
             foreach (var exscore in exScoreList)
             {
                 exscore.exam = examList.Where(d => d.Id == exscore.examid).FirstOrDefault();
-                var teacherid = cctList.Where(d => d.clazzid == exscore.clazzid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
+                var teacherid = cctList.Where(d => d.classid == exscore.classid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
                 exscore.Teacher = teachersList.Where(d => d.Id == teacherid.ObjToInt()).FirstOrDefault()?.Name;
 
 
-                exscore.clazz = clazzList.Where(d => d.Id == exscore.clazzid).FirstOrDefault();
+                exscore.clazz = clazzList.Where(d => d.Id == exscore.classid).FirstOrDefault();
                 exscore.student = studentsList.Where(d => d.Id == exscore.studentid).FirstOrDefault();
             }
 
@@ -93,7 +93,7 @@ namespace Student.Achieve.Controllers
 
             foreach (var item in studentsList)
             {
-                var clazzModel = clazzList.Where(d => d.Id == item.clazzid).FirstOrDefault();
+                var clazzModel = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
                 var exscoreStudentList = exScoreList.Where(d => d.studentid == item.Id).ToList();
 
                 FSNStudent FSNStudentModel = new FSNStudent()
@@ -102,8 +102,8 @@ namespace Student.Achieve.Controllers
                     StudentName = item.Name,
                     Clazz = clazzModel.ClassNo,
                     ClazzId = clazzModel.Id,
-                    SubjectA = item.SubjectA,
-                    SubjectB = item.SubjectB,
+                    ProDirection = item.ProDirection,
+                    CGPA = item.CGPA,
                     Chinese = (exscoreStudentList.Where(d => d.exam.course.Name == "语文").FirstOrDefault()?.score).ObjToInt(),
                     Meth = (exscoreStudentList.Where(d => d.exam.course.Name == "数学").FirstOrDefault()?.score).ObjToInt(),
                     English = (exscoreStudentList.Where(d => d.exam.course.Name == "英语").FirstOrDefault()?.score).ObjToInt(),
@@ -117,58 +117,7 @@ namespace Student.Achieve.Controllers
 
                 FSNStudentModel.T = FSNStudentModel.Chinese + FSNStudentModel.Chinese + FSNStudentModel.Chinese;
 
-                if (FSNStudentModel.SubjectA == "物理")
-                {
-                    FSNStudentModel.F = FSNStudentModel.T + FSNStudentModel.Physics;
-                }
-                else if (FSNStudentModel.SubjectA == "历史")
-                {
-                    FSNStudentModel.F = FSNStudentModel.T + FSNStudentModel.History;
-                }
-
                 FSNStudentModel.S += FSNStudentModel.F;
-                switch (FSNStudentModel.SubjectB)
-                {
-                    case "1":
-                        FSNStudentModel.S = FSNStudentModel.Chemistry + FSNStudentModel.Biology; break;
-
-                    case "2":
-                        FSNStudentModel.S = FSNStudentModel.Chemistry + FSNStudentModel.Politics; break;
-
-                    case "3":
-                        FSNStudentModel.S = FSNStudentModel.Chemistry + FSNStudentModel.Geography; break;
-
-                    case "4":
-                        FSNStudentModel.S = FSNStudentModel.Politics + FSNStudentModel.Biology; break;
-
-                    case "5":
-                        FSNStudentModel.S = FSNStudentModel.Geography + FSNStudentModel.Biology; break;
-
-                    case "6":
-                        FSNStudentModel.S = FSNStudentModel.Politics + FSNStudentModel.Geography; break;
-
-                    case "7":
-                        FSNStudentModel.S = FSNStudentModel.Politics + FSNStudentModel.Geography; break;
-
-                    case "8":
-                        FSNStudentModel.S = FSNStudentModel.Politics + FSNStudentModel.Chemistry; break;
-
-                    case "9":
-                        FSNStudentModel.S = FSNStudentModel.Politics + FSNStudentModel.Biology; break;
-
-                    case "10":
-                        FSNStudentModel.S = FSNStudentModel.Geography + FSNStudentModel.Chemistry; break;
-
-                    case "11":
-                        FSNStudentModel.S = FSNStudentModel.Geography + FSNStudentModel.Biology; break;
-
-                    case "12":
-                        FSNStudentModel.S = FSNStudentModel.Chemistry + FSNStudentModel.Biology; break;
-
-                    default:
-                        break;
-                }
-
                 FSNStudentModel.N = FSNStudentModel.Chinese + FSNStudentModel.Meth + FSNStudentModel.English + FSNStudentModel.Physics + FSNStudentModel.Chemistry + FSNStudentModel.Biology + FSNStudentModel.Politics + FSNStudentModel.History + FSNStudentModel.Geography;
 
                 FSNStudents.Add(FSNStudentModel);
@@ -227,8 +176,8 @@ namespace Student.Achieve.Controllers
         public string Clazz { get; set; }
         public int ClazzId { get; set; }
         public string StudentName { get; set; }
-        public string SubjectA { get; set; }
-        public string SubjectB { get; set; }
+        public string ProDirection { get; set; }
+        public double CGPA { get; set; }
 
         public int Chinese { get; set; }
         //public int ChineseSort { get; set; }

@@ -19,14 +19,14 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly IExamDetailRepository _iExamDetailRepository;
         private readonly IExamDetailScoreRepository _iExamDetailScoreRepository;
 
-        public SingleCourseStudentController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
+        public SingleCourseStudentController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClassRepository iClazzRepository, IGradeRepository iGradeRepository, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -76,17 +76,17 @@ namespace Student.Achieve.Controllers
             foreach (var exscore in exScoreList)
             {
                 exscore.exam = examList.Where(d => d.Id == exscore.examid).FirstOrDefault();
-                var teacherid = cctList.Where(d => d.clazzid == exscore.clazzid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
+                var teacherid = cctList.Where(d => d.classid == exscore.classid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
                 exscore.Teacher = teachersList.Where(d => d.Id == teacherid.ObjToInt()).FirstOrDefault()?.Name;
 
 
-                exscore.clazz = clazzList.Where(d => d.Id == exscore.clazzid).FirstOrDefault();
+                exscore.clazz = clazzList.Where(d => d.Id == exscore.classid).FirstOrDefault();
                 exscore.student = studentsList.Where(d => d.Id == exscore.studentid).FirstOrDefault();
             }
 
 
             // 统计 全年级的 某次考试 全部科目的 全部成绩
-            var examSortAllCourse = exScoreList.Where(d => d.clazzid == ClazzId && AcademicYearSchoolTerm == (d.exam.AcademicYear + d.exam.SchoolTerm) && d.exam.ExamName == ExamName && d.exam.gradeid == GradeId).ToList();
+            var examSortAllCourse = exScoreList.Where(d => d.classid == ClazzId && AcademicYearSchoolTerm == (d.exam.AcademicYear + d.exam.SchoolTerm) && d.exam.ExamName == ExamName && d.exam.gradeid == GradeId).ToList();
 
 
             // 统计 全年级的 某次考试 某门科目中 的全部成绩
@@ -112,7 +112,7 @@ namespace Student.Achieve.Controllers
 
 
             // 如果选中班级，则是部分学生
-            studentsList = studentsList.Where(d => d.gradeid == GradeId && d.clazzid == ClazzId).ToList();
+            studentsList = studentsList.Where(d => d.gradeid == GradeId && d.classid == ClazzId).ToList();
 
             StringBuilder jsonBuilder = new StringBuilder();
             StringBuilder jsonBuilderHeader = new StringBuilder();
@@ -128,7 +128,7 @@ namespace Student.Achieve.Controllers
 
             foreach (var item in studentsList)
             {
-                var clazzModel = clazzList.Where(d => d.Id == item.clazzid).FirstOrDefault();
+                var clazzModel = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
                 var examdetailscoreModel = totalGradeSingleCourseStudents.Where(d => d.StudentNo == item.StudentNo).FirstOrDefault();
 
                 jsonBuilder.Append("{");

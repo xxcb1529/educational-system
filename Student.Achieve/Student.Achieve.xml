@@ -179,12 +179,12 @@
             配置构造函数，用来创建关系映射
             </summary>
         </member>
-        <member name="T:Student.Achieve.Controllers.ClazzController">
+        <member name="T:Student.Achieve.Controllers.ClassController">
             <summary>
             班级管理
             </summary>
         </member>
-        <member name="M:Student.Achieve.Controllers.ClazzController.Get(System.Int32,System.String)">
+        <member name="M:Student.Achieve.Controllers.ClassController.Get(System.Int32,System.String)">
             <summary>
             获取全部班级
             </summary>
@@ -192,21 +192,21 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="M:Student.Achieve.Controllers.ClazzController.Post(Student.Achieve.Model.Models.Clazz)">
+        <member name="M:Student.Achieve.Controllers.ClassController.Post(Student.Achieve.Model.Models.Class)">
             <summary>
             添加一个班级
             </summary>
             <param name="Clazz"></param>
             <returns></returns>
         </member>
-        <member name="M:Student.Achieve.Controllers.ClazzController.Put(Student.Achieve.Model.Models.Clazz)">
+        <member name="M:Student.Achieve.Controllers.ClassController.Put(Student.Achieve.Model.Models.Class)">
             <summary>
             更新班级
             </summary>
             <param name="Clazz"></param>
             <returns></returns>
         </member>
-        <member name="M:Student.Achieve.Controllers.ClazzController.Delete(System.Int32)">
+        <member name="M:Student.Achieve.Controllers.ClassController.Delete(System.Int32)">
             <summary>
             删除班级
             </summary>
@@ -614,12 +614,12 @@
             
             </summary>
         </member>
-        <member name="P:Student.Achieve.Controllers.StudentDataRoot.SubjectA">
+        <member name="P:Student.Achieve.Controllers.StudentDataRoot.ProDirection">
             <summary>
             物理
             </summary>
         </member>
-        <member name="P:Student.Achieve.Controllers.StudentDataRoot.SubjectB">
+        <member name="P:Student.Achieve.Controllers.StudentDataRoot.CGPA">
             <summary>
             
             </summary>
@@ -844,6 +844,19 @@
             学生得分
             </summary>
         </member>
+        <member name="T:Student.Achieve.Controllers.MParentController">
+            <summary>
+            父级接口管理
+            </summary>
+        </member>
+        <member name="M:Student.Achieve.Controllers.MParentController.Get(System.String)">
+            <summary>
+            获取全部父级接口
+            </summary>
+            <param name="page"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
         <member name="T:Student.Achieve.Controllers.ImgController">
             <summary>
             图片管理
@@ -907,11 +920,12 @@
             接口管理
             </summary>
         </member>
-        <member name="M:Student.Achieve.Controllers.ModuleController.#ctor(Student.Achieve.IRepository.IModuleRepository)">
+        <member name="M:Student.Achieve.Controllers.ModuleController.#ctor(Student.Achieve.IRepository.IModuleRepository,Student.Achieve.IRepository.IMParentRepository)">
             <summary>
             构造函数
             </summary>
             <param name="moduleRepository"></param>
+            <param name="mParentRepository"></param>
         </member>
         <member name="M:Student.Achieve.Controllers.ModuleController.Get(System.Int32,System.String)">
             <summary>
@@ -919,6 +933,12 @@
             </summary>
             <param name="page"></param>
             <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Student.Achieve.Controllers.ModuleController.GetAllParents">
+            <summary>
+            获取表格树api
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Student.Achieve.Controllers.ModuleController.Post(Student.Achieve.Model.Models.Module)">
@@ -950,6 +970,14 @@
         <member name="M:Student.Achieve.Controllers.PermissionController.Get(System.Int32,System.String)">
             <summary>
             获取菜单
+            </summary>
+            <param name="page"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Student.Achieve.Controllers.PermissionController.GetPermissonTree">
+            <summary>
+            获取菜单树
             </summary>
             <param name="page"></param>
             <param name="key"></param>

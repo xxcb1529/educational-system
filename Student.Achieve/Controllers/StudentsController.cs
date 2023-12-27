@@ -20,12 +20,12 @@ namespace Student.Achieve.Controllers
     {
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IGradeRepository _iGradeRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
 
-        public StudentsController(IStudentsRepository iStudentsRepository, IGradeRepository iGradeRepository, IClazzRepository iClazzRepository, IUser iUser)
+        public StudentsController(IStudentsRepository iStudentsRepository, IGradeRepository iGradeRepository, IClassRepository iClazzRepository, IUser iUser)
         {
             this._iStudentsRepository = iStudentsRepository;
             this._iGradeRepository = iGradeRepository;
@@ -62,7 +62,7 @@ namespace Student.Achieve.Controllers
 
             foreach (var item in data.data)
             {
-                item.clazz = clazzList.Where(d => d.Id == item.clazzid).FirstOrDefault();
+                item.clazz = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
                 item.grade = gradeList.Where(d => d.Id == item.gradeid).FirstOrDefault();
             }
 

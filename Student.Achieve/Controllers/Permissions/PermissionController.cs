@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.POIFS.Properties;
+using Pipelines.Sockets.Unofficial.Arenas;
+using SqlSugar;
 using Student.Achieve.AuthHelper;
 using Student.Achieve.Common.Helper;
 using Student.Achieve.Common.HttpContextUser;
@@ -132,6 +135,155 @@ namespace Student.Achieve.Controllers
                 response = permissions
             };
 
+        }
+
+        /// <summary>
+        /// 获取菜单树
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        // GET: api/User
+        [HttpGet]
+        public async Task<MessageModel<List<PermissionNode>>> GetPermissonTree()
+        {
+            var apis = await GetApis();
+
+            // 查询所有不是按钮的权限，这些是父级权限
+            var parentPermissions = await _permissionRepository.Query(p => p.IsDeleted != true && p.IsButton != true && p.Pid == 0);
+
+            var allPermissions = await _permissionRepository.Query(p => p.IsDeleted != true);
+            // 构建树形结构
+            var permissionNodes = new List<PermissionNode>();
+            foreach (var parent in parentPermissions)
+            {
+                List<int> pidarr = new List<int>
+                {
+                    parent.Pid
+                };
+                var id = parent.Id;
+                if(id > 0){
+                    pidarr.Add(0);
+                }
+                var parents = allPermissions.FirstOrDefault(d => d.Id == parent.Pid);
+
+                while (parents != null)
+                {
+                    pidarr.Add(parents.Id);
+                    parents = allPermissions.FirstOrDefault(d => d.Id == parents.Pid);
+                }
+
+
+                parent.PidArr = pidarr.OrderBy(d => d).Distinct().ToList();
+                foreach (var pid in parent.PidArr)
+                {
+                    var per = allPermissions.FirstOrDefault(d => d.Id == pid);
+                    parent.PnameArr.Add((per != null ? per.Name : "根节点") + "/");
+                }
+                var permissionNode = new PermissionNode { 
+                    //Permission = parent, 
+                    Id = parent.Id,
+                    Code = parent.Code,
+                    Name = parent.Name,
+                    IsButton = parent.IsButton,
+                    IsAuth = parent.IsAuth,
+                    IsHide = parent.IsHide,
+                    Pid = parent.Pid,
+                    Mid = parent.Mid,
+                    OrderSort = parent.OrderSort,
+                    Icon = parent.Icon,
+                    Description = parent.Description,
+                    Enabled = parent.Enabled,
+                    MName = apis.FirstOrDefault(d => d.Id == parent.Mid)?.LinkUrl,
+                    CreateTime = parent.CreateTime.ToString(),
+                    PnameArr = parent.PnameArr
+                };
+                PopulateChildren(permissionNode, allPermissions,apis);
+                permissionNodes.Add(permissionNode);
+            }
+
+            return new MessageModel<List<PermissionNode>>()
+            {
+                msg = "获取成功",
+                success = parentPermissions.Any(),
+                response = permissionNodes
+            };
+
+        }
+        public class PermissionNode
+        {
+            public string Code { get; set; }
+            public string Name { get; set; }
+            public bool IsButton { get; set; } = false;
+            public bool? IsHide { get; set; } = false;
+            public bool? IsAuth { get; set; } = true;
+            public int Pid { get; set; }
+            public int Mid { get; set; }
+            public int OrderSort { get; set; }
+            public string Icon { get; set; }
+            public string Description { get; set; }
+            public bool Enabled { get; set; }
+            public int Id { get; set; }
+            public string MName {  get; set; }
+            public string CreateTime { get; set; }
+            public List<string> PnameArr { get; set; }
+            public Permission Permission { get; set; }
+            public List<PermissionNode> children { get; set; } = new List<PermissionNode>();
+        }
+        private async Task<List<Module>> GetApis()
+        {
+            return await _moduleRepository.Query(d => d.IsDeleted == false);
+        }
+        private void PopulateChildren(PermissionNode parentNode, List<Permission> allPermissions,List<Module> apis)
+        {
+            var Apis = apis;
+            var childPermissions = allPermissions.Where(p => p.Pid == parentNode.Id).ToList();
+            foreach (var childPermission in childPermissions)
+            {
+                List<int> pidarr = new List<int>
+                {
+                    childPermission.Pid
+                };
+                var id = childPermission.Id;
+                if (id > 0)
+                {
+                    pidarr.Add(0);
+                }
+                var parents = allPermissions.FirstOrDefault(d => d.Id == childPermission.Pid);
+
+                while (parents != null)
+                {
+                    pidarr.Add(parents.Id);
+                    parents = allPermissions.FirstOrDefault(d => d.Id == parents.Pid);
+                }
+
+
+                childPermission.PidArr = pidarr.OrderBy(d => d).Distinct().ToList();
+                foreach (var pid in childPermission.PidArr)
+                {
+                    var per = allPermissions.FirstOrDefault(d => d.Id == pid);
+                    childPermission.PnameArr.Add((per != null ? per.Name : "根节点") + "/");
+                }
+                var childNode = new PermissionNode {
+                    Id = childPermission.Id,
+                    Code = childPermission.Code,
+                    Name = childPermission.Name,
+                    IsButton = childPermission.IsButton,
+                    IsAuth = childPermission.IsAuth,
+                    IsHide = childPermission.IsHide,
+                    Pid = childPermission.Pid,
+                    Mid = childPermission.Mid,
+                    OrderSort = childPermission.OrderSort,
+                    Icon = childPermission.Icon,
+                    Description = childPermission.Description,
+                    Enabled = childPermission.Enabled,
+                    MName = Apis.FirstOrDefault(d => d.Id == childPermission.Mid)?.LinkUrl,
+                    CreateTime = childPermission.CreateTime.ToString(),
+                    PnameArr = childPermission.PnameArr
+                };
+                PopulateChildren(childNode, allPermissions, Apis);
+                parentNode.children.Add(childNode);
+            }
         }
 
         // GET: api/User/5

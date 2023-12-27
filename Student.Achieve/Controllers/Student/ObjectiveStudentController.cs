@@ -18,14 +18,14 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly IExamDetailRepository _iExamDetailRepository;
         private readonly IExamDetailScoreRepository _iExamDetailScoreRepository;
 
-        public ObjectiveStudentController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
+        public ObjectiveStudentController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClassRepository iClazzRepository, IGradeRepository iGradeRepository, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -80,7 +80,7 @@ namespace Student.Achieve.Controllers
 
 
             // 如果选中班级，则是部分学生
-            studentsList = studentsList.Where(d => d.gradeid == GradeId && d.clazzid == ClazzId).ToList();
+            studentsList = studentsList.Where(d => d.gradeid == GradeId && d.classid == ClazzId).ToList();
 
             StringBuilder jsonBuilder = new StringBuilder();
             StringBuilder jsonBuilderHeader = new StringBuilder();
@@ -93,7 +93,7 @@ namespace Student.Achieve.Controllers
 
             foreach (var item in studentsList)
             {
-                var clazzModel = clazzList.Where(d => d.Id == item.clazzid).FirstOrDefault();
+                var clazzModel = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
                 jsonBuilder.Append("{");
                 jsonBuilder.Append("\"");
                 jsonBuilder.Append("学号");

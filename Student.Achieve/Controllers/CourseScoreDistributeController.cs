@@ -20,14 +20,14 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
-        public CourseScoreDistributeController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository)
+        public CourseScoreDistributeController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClassRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -65,11 +65,11 @@ namespace Student.Achieve.Controllers
             foreach (var exscore in exScoreList)
             {
                 exscore.exam = examList.Where(d => d.Id == exscore.examid).FirstOrDefault();
-                var teacherid = cctList.Where(d => d.clazzid == exscore.clazzid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
+                var teacherid = cctList.Where(d => d.classid == exscore.classid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
                 exscore.Teacher = teachersList.Where(d => d.Id == teacherid.ObjToInt()).FirstOrDefault()?.Name;
 
 
-                exscore.clazz = clazzList.Where(d => d.Id == exscore.clazzid).FirstOrDefault();
+                exscore.clazz = clazzList.Where(d => d.Id == exscore.classid).FirstOrDefault();
                 exscore.student = studentsList.Where(d => d.Id == exscore.studentid).FirstOrDefault();
             }
 
@@ -101,13 +101,13 @@ namespace Student.Achieve.Controllers
             }
 
 
-            var clazzGroups = exScoreList.Select(d => new { d.clazzid, d.exam.gradeid }).ToList();
+            var clazzGroups = exScoreList.Select(d => new { d.classid, d.exam.gradeid }).ToList();
 
-            clazzGroups = clazzGroups.GroupBy(x => new { x.clazzid, x.gradeid }).Select(x => x.First()).ToList();
+            clazzGroups = clazzGroups.GroupBy(x => new { x.classid, x.gradeid }).Select(x => x.First()).ToList();
             List<CourseScoreDistribute> courseScoreDistributes = new List<CourseScoreDistribute>();
             foreach (var item in clazzGroups)
             {
-                var exscore = exScoreList.Where(d => d.clazzid == item.clazzid && d.exam.gradeid == item.gradeid).ToList();
+                var exscore = exScoreList.Where(d => d.classid == item.classid && d.exam.gradeid == item.gradeid).ToList();
 
                 var examStuCount = (exscore.GroupBy(x => new { x.studentid }).Select(x => x.First()).Count());
 

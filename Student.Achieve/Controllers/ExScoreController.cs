@@ -22,12 +22,12 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
-        public ExScoreController(IExScoreRepository iExScoreRepository,IStudentsRepository iStudentsRepository,IExamRepository iExamRepository,ICourseRepository iCourseRepository,IClazzRepository iClazzRepository,IGradeRepository iGradeRepository, IUser iUser)
+        public ExScoreController(IExScoreRepository iExScoreRepository,IStudentsRepository iStudentsRepository,IExamRepository iExamRepository,ICourseRepository iCourseRepository,IClassRepository iClazzRepository,IGradeRepository iGradeRepository, IUser iUser)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -74,7 +74,7 @@ namespace Student.Achieve.Controllers
 
             foreach (var item in exScoreList)
             {
-                item.clazz = clazzList.Where(d => d.Id == item.clazzid).FirstOrDefault();
+                item.clazz = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
                 item.exam = examList.Where(d => d.Id == item.examid).FirstOrDefault();
                 item.student = studentsList.Where(d => d.Id == item.studentid).FirstOrDefault();
             }
@@ -138,7 +138,7 @@ namespace Student.Achieve.Controllers
 
             var examModel = await _iExamRepository.QueryById(ExScore.examid);
             var studentModel = await _iStudentsRepository.QueryById(ExScore.studentid);
-            ExScore.clazzid = studentModel.clazzid;
+            ExScore.classid = studentModel.classid;
             ExScore.courseid = examModel.courseid;
 
 

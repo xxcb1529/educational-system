@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\Permissions\IMParentRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="index.html" />
     <None Remove="Student.db-journal" />
   </ItemGroup>

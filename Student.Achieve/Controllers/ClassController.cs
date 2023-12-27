@@ -16,14 +16,14 @@ namespace Student.Achieve.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(Permissions.Name)]
-    public class ClazzController : ControllerBase
+    public class ClassController : ControllerBase
     {
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
 
-        public ClazzController(IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser)
+        public ClassController(IClassRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser)
         {
             _iClazzRepository = iClazzRepository;
             _iUser = iUser;
@@ -39,7 +39,7 @@ namespace Student.Achieve.Controllers
         // GET: api/Clazz
         [HttpGet]
         [AllowAnonymous]
-        public async Task<MessageModel<PageModel<Clazz>>> Get(int page = 1, string key = "")
+        public async Task<MessageModel<PageModel<Class>>> Get(int page = 1, string key = "")
         {
             if (string.IsNullOrEmpty(key) || string.IsNullOrWhiteSpace(key))
             {
@@ -58,7 +58,7 @@ namespace Student.Achieve.Controllers
             var data = await _iClazzRepository.GetQueryPageOfMapperTb(a => (a.IsDeleted == false && (a.Name != null && a.Name.Contains(key))) && (a.GradeId == GID || (GID == -9999 && true)), page, intPageSize, " Id asc ");
 
 
-            return new MessageModel<PageModel<Clazz>>()
+            return new MessageModel<PageModel<Class>>()
             {
                 msg = "获取成功",
                 success = data.dataCount >= 0,
@@ -69,11 +69,11 @@ namespace Student.Achieve.Controllers
 
         // GET: api/Clazz/5
         [HttpGet("{id}")]
-        public async Task<MessageModel<Clazz>> Get(string id)
+        public async Task<MessageModel<Class>> Get(string id)
         {
             var data = await _iClazzRepository.QueryById(id);
 
-            return new MessageModel<Clazz>()
+            return new MessageModel<Class>()
             {
                 msg = "获取成功",
                 success = data != null,
@@ -89,7 +89,7 @@ namespace Student.Achieve.Controllers
         /// <returns></returns>
         // POST: api/Clazz
         [HttpPost]
-        public async Task<MessageModel<string>> Post([FromBody] Clazz Clazz)
+        public async Task<MessageModel<string>> Post([FromBody] Class Clazz)
         {
             var data = new MessageModel<string>();
 
@@ -112,7 +112,7 @@ namespace Student.Achieve.Controllers
         /// <returns></returns>
         // PUT: api/Clazz/5
         [HttpPut]
-        public async Task<MessageModel<string>> Put([FromBody] Clazz Clazz)
+        public async Task<MessageModel<string>> Put([FromBody] Class Clazz)
         {
             var data = new MessageModel<string>();
             if (Clazz != null && Clazz.Id > 0)
@@ -159,9 +159,9 @@ namespace Student.Achieve.Controllers
         // GET: api/Clazz/GetClazzTree
         [HttpGet]
         [AllowAnonymous]
-        public async Task<MessageModel<List<TreeModel>>> GetClazzTree(int gid = 0)
+        public async Task<MessageModel<List<TreeModel>>> GetClassTree(int gid = 0)
         {
-            List<Clazz> clazzList = await _iClazzRepository.Query(d => d.IsDeleted == false);
+            List<Class> clazzList = await _iClazzRepository.Query(d => d.IsDeleted == false);
             if (gid > 0)
             {
                 clazzList = clazzList.Where(d => d.GradeId == gid).ToList();

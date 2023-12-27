@@ -14,9 +14,9 @@ namespace Student.Achieve.Model.Models
     {
 
         [SugarColumn(IsIgnore = true)]
-        public Clazz clazz { get; set; } //班级
+        public Class clazz { get; set; } //班级
 
-        public int clazzid { get; set; } //班级ID
+        public int classid { get; set; } //班级ID
 
 
 
@@ -42,15 +42,15 @@ namespace Student.Achieve.Model.Models
         [SugarColumn(Length = 50, IsNullable = true)]
         public string Name { get; set; }
         /// <summary>
-        /// 学科一
+        /// 专业方向
         /// </summary>
         [SugarColumn(Length = 200, IsNullable = true)]
-        public string SubjectA { get; set; }
+        public string ProDirection { get; set; }
         /// <summary>
-        /// 学科二
+        /// 绩点
         /// </summary>
-        [SugarColumn(Length = 200, IsNullable = true)]
-        public string SubjectB { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public double CGPA { get; set; }
         /// <summary>
         /// 在校情况
         /// </summary>

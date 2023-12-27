@@ -27,7 +27,7 @@ namespace Student.Achieve.Model.Models
 
 
         [SugarColumn(IsIgnore = true)]
-        public List<Clazz> clazzList { get; set; } = new List<Clazz>(); //年级下的班级列表
+        public List<Class> clazzList { get; set; } = new List<Class>(); //年级下的班级列表
 
         [SugarColumn(IsIgnore = true)]
         public List<Course> courseList { get; set; } = new List<Course>(); //本年级的课程

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +11,12 @@ using Student.Achieve.IRepository;
 using Student.Achieve.Model;
 using Student.Achieve.Model.Models;
 using Student.Achieve.Tran;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Student.Achieve.Controllers
 {
@@ -27,7 +26,7 @@ namespace Student.Achieve.Controllers
     public class ExcelImportController : ControllerBase
     {
         private readonly ICCTRepository _iCCTRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly ICourseRepository _iCourseRepository;
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly IGradeRepository _iGradeRepository;
@@ -37,7 +36,7 @@ namespace Student.Achieve.Controllers
         private readonly IExamDetailRepository _iExamDetailRepository;
         private readonly IExamDetailScoreRepository _iExamDetailScoreRepository;
 
-        public ExcelImportController(ICCTRepository iCCTRepository, IClazzRepository iClazzRepository, ICourseRepository iCourseRepository, ITeacherRepository iTeacherRepository, IGradeRepository iGradeRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, IExScoreRepository iExScoreRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
+        public ExcelImportController(ICCTRepository iCCTRepository, IClassRepository iClazzRepository, ICourseRepository iCourseRepository, ITeacherRepository iTeacherRepository, IGradeRepository iGradeRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, IExScoreRepository iExScoreRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
         {
             this._iCCTRepository = iCCTRepository;
             this._iClazzRepository = iClazzRepository;
@@ -56,7 +55,7 @@ namespace Student.Achieve.Controllers
 
 
         [HttpPost]
-        public async Task<MessageModel<string>> ImportTeacherDataFile([FromServices]IHostingEnvironment environment, string datatype)
+        public async Task<MessageModel<string>> ImportTeacherDataFile([FromServices] IHostingEnvironment environment, string datatype)
         {
             var data = new MessageModel<string>();
             string path = string.Empty;
@@ -153,11 +152,11 @@ namespace Student.Achieve.Controllers
             Dictionary<string, string> sqlNameDics = new Dictionary<string, string>();
             sqlNameDics.Add("入学年份", "EnrollmentYear");
             sqlNameDics.Add("年级", "Grade");
-            sqlNameDics.Add("级组", "ClazzLevel");
-            sqlNameDics.Add("级长", "Manager");
+            sqlNameDics.Add("院系", "Department");
+            sqlNameDics.Add("系主任", "DepManager");
             sqlNameDics.Add("班级", "Clazz");
-            sqlNameDics.Add("班类", "ClazzType");
-            sqlNameDics.Add("选科", "ChooseSub");
+            sqlNameDics.Add("专业", "Specialized");
+            sqlNameDics.Add("辅导员", "Counsellor");
             sqlNameDics.Add("班主任", "TeacherCharge");
             sqlNameDics.Add("语文", "Chinese");
             sqlNameDics.Add("数学", "Meth");
@@ -217,7 +216,7 @@ namespace Student.Achieve.Controllers
 
 
                 BaseDao<Grade> gradDao = new BaseDao<Grade>();
-                BaseDao<Clazz> clazzDao = new BaseDao<Clazz>();
+                BaseDao<Class> clazzDao = new BaseDao<Class>();
                 BaseDao<Teacher> teacherDao = new BaseDao<Teacher>();
                 BaseDao<Course> courseDao = new BaseDao<Course>();
                 BaseDao<CCT> cctDao = new BaseDao<CCT>();
@@ -245,31 +244,31 @@ namespace Student.Achieve.Controllers
                         if (gradeId > 0)
                         {
 
-                            List<Clazz> clazzs = (from item in teacherDataRoots
-                                                  where item.Grade == grade.Name && item.EnrollmentYear == grade.EnrollmentYear
-                                                  select new Clazz
-                                                  {
-                                                      ClassNo = item.Clazz,
-                                                      Name = item.Clazz,
-                                                      Manager = item.Manager,
-                                                      GradeId = gradeId,
-                                                      IsDeleted = false,
-                                                      ClazzLevel = item.ClazzLevel,
-                                                      ClazzType = item.ClazzType,
-                                                      CreateTime = DateTime.Now,
-                                                      TeacherCharge = item.TeacherCharge,
-                                                      ChooseSub = item.ChooseSub,
-                                                  }).ToList();
+                            List<Class> classes = (from item in teacherDataRoots
+                                                   where item.Grade == grade.Name && item.EnrollmentYear == grade.EnrollmentYear
+                                                   select new Class
+                                                   {
+                                                       ClassNo = item.Clazz,
+                                                       Name = item.Clazz,
+                                                       DepManager = item.Manager,
+                                                       GradeId = gradeId,
+                                                       IsDeleted = false,
+                                                       Department = item.ClazzLevel,
+                                                       Specialized = item.ClazzType,
+                                                       CreateTime = DateTime.Now,
+                                                       TeacherCharge = item.TeacherCharge,
+                                                       Counsellor = item.ChooseSub,
+                                                   }).ToList();
 
-                            foreach (var clazz in clazzs)
+                            foreach (var clazz in classes)
                             {
-                                int clazzid = 0;
+                                int classid = 0;
                                 //这里保存 clazz 单个实体
                                 //得到班级id
 
-                                //clazzid = await _iClazzRepository.Add(clazz);
-                                clazzid = clazzDao.Add(clazz);
-                                if (clazzid > 0)
+                                //classid = await _iClazzRepository.Add(clazz);
+                                classid = clazzDao.Add(clazz);
+                                if (classid > 0)
                                 {
                                     foreach (var course in courses)
                                     {
@@ -330,12 +329,12 @@ namespace Student.Achieve.Controllers
 
                                         }
 
-                                        if (clazzid > 0 && courseid > 0 && gradeId > 0 && t3id > 0)
+                                        if (classid > 0 && courseid > 0 && gradeId > 0 && t3id > 0)
                                         {
                                             CCT cCT = new CCT()
                                             {
                                                 IsDeleted = false,
-                                                clazzid = clazzid,
+                                                classid = classid,
                                                 courseid = courseid.ObjToInt(),
                                                 CreateTime = DateTime.Now,
                                                 gradeid = gradeId,
@@ -518,8 +517,8 @@ namespace Student.Achieve.Controllers
             sqlNameDics.Add("学号", "StudentNo");
             sqlNameDics.Add("姓名", "Name");
             sqlNameDics.Add("班级", "Clazz");
-            sqlNameDics.Add("学科一", "SubjectA");
-            sqlNameDics.Add("学科二", "SubjectB");
+            sqlNameDics.Add("专业方向", "ProDirection");
+            sqlNameDics.Add("绩点", "CGPA");
             sqlNameDics.Add("年级", "Grade");
             sqlNameDics.Add("在校情况", "InSchoolSituation");
             sqlNameDics.Add("入学年份", "EnrollmentYear");
@@ -556,7 +555,7 @@ namespace Student.Achieve.Controllers
                         Students student = new Students()
                         {
                             IsDeleted = false,
-                            clazzid = claazid,
+                            classid = claazid,
                             CreateTime = DateTime.Now,
                             Gender = item.Gender,
                             gradeid = gradeid,
@@ -568,8 +567,8 @@ namespace Student.Achieve.Controllers
                             Note3 = item.Note3,
                             StudentNo = item.StudentNo,
                             EnrollmentYear = item.EnrollmentYear,
-                            SubjectA = item.SubjectA,
-                            SubjectB = item.SubjectB,
+                            ProDirection = item.ProDirection,
+                            CGPA = item.CGPA,
                             UniversityEntranceNumber = item.UniversityEntranceNumber,
 
                         };
@@ -807,16 +806,16 @@ namespace Student.Achieve.Controllers
 
 
                         var gradeid2 = (gradeList.Where(d => d.EnrollmentYear == item.enrollmentYear && d.Name == item.grade).FirstOrDefault()?.Id).ObjToInt();
-                        var clazzid2 = (clazzList.Where(d => d.GradeId == gradeid2 && d.ClassNo == item.clazz.PadLeft(2, '0')).FirstOrDefault()?.Id).ObjToInt();
+                        var classid2 = (clazzList.Where(d => d.GradeId == gradeid2 && d.ClassNo == item.clazz.PadLeft(2, '0')).FirstOrDefault()?.Id).ObjToInt();
                         var examid = (examList.Where(d => d.AcademicYear == item.academicYear2 && d.gradeid == gradeid2 && d.SchoolTerm == item.schoolTerm && d.ExamName == item.examName && d.courseid == courseid).FirstOrDefault()?.Id).ObjToInt();
 
-                        if (courseid > 0 && clazzid2 > 0 && studentid > 0 && examid > 0)
+                        if (courseid > 0 && classid2 > 0 && studentid > 0 && examid > 0)
                         {
                             ExScore exScore = new ExScore()
                             {
                                 IsDeleted = false,
                                 CreateTime = DateTime.Now,
-                                clazzid = clazzid2,
+                                classid = classid2,
                                 courseid = courseid,
                                 studentid = studentid,
                                 examid = examid,
@@ -1058,12 +1057,12 @@ namespace Student.Achieve.Controllers
 
 
                         var gradeid2 = (gradeList.Where(d => d.EnrollmentYear == item.enrollmentYear && d.Name == item.grade).FirstOrDefault()?.Id).ObjToInt();
-                        var clazzid2 = (clazzList.Where(d => d.GradeId == gradeid2 && d.ClassNo == item.clazz.PadLeft(2, '0')).FirstOrDefault()?.Id).ObjToInt();
+                        var classid2 = (clazzList.Where(d => d.GradeId == gradeid2 && d.ClassNo == item.clazz.PadLeft(2, '0')).FirstOrDefault()?.Id).ObjToInt();
                         var examid = (examList.Where(d => d.AcademicYear == item.academicYear2 && d.gradeid == gradeid2 && d.SchoolTerm == item.schoolTerm && d.ExamName == item.examName && d.courseid == courseid).FirstOrDefault()?.Id).ObjToInt();
 
-                        if (courseid > 0 && clazzid2 > 0 && studentid > 0 && examid > 0)
+                        if (courseid > 0 && classid2 > 0 && studentid > 0 && examid > 0)
                         {
-                            var model = exScoresList.Where(d => d.clazzid == clazzid2 && d.courseid == courseid && d.studentid == studentid && d.examid == examid).FirstOrDefault();
+                            var model = exScoresList.Where(d => d.classid == classid2 && d.courseid == courseid && d.studentid == studentid && d.examid == examid).FirstOrDefault();
 
                             if (model != null)
                             {
@@ -2200,11 +2199,11 @@ namespace Student.Achieve.Controllers
         /// <summary>
         /// 物理
         /// </summary>
-        public string SubjectA { get; set; }
+        public string ProDirection { get; set; }
         /// <summary>
         /// 
         /// </summary>
-        public string SubjectB { get; set; }
+        public double CGPA { get; set; }
         /// <summary>
         /// 高一
         /// </summary>

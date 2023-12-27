@@ -9,39 +9,39 @@
             课程-班级-教师表
             </summary>
         </member>
-        <member name="T:Student.Achieve.Model.Models.Clazz">
+        <member name="T:Student.Achieve.Model.Models.Class">
             <summary>
             班级表
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Clazz.ClassNo">
+        <member name="P:Student.Achieve.Model.Models.Class.ClassNo">
             <summary>
             班级编号
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Clazz.ClazzLevel">
+        <member name="P:Student.Achieve.Model.Models.Class.Department">
             <summary>
-            级组
+            院系
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Clazz.Manager">
+        <member name="P:Student.Achieve.Model.Models.Class.DepManager">
             <summary>
-            级长
+            系主任
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Clazz.ClazzType">
+        <member name="P:Student.Achieve.Model.Models.Class.Specialized">
             <summary>
-            班类
+            专业
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Clazz.TeacherCharge">
+        <member name="P:Student.Achieve.Model.Models.Class.TeacherCharge">
             <summary>
             班主任
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Clazz.ChooseSub">
+        <member name="P:Student.Achieve.Model.Models.Class.Counsellor">
             <summary>
-            选科
+            辅导员
             </summary>
         </member>
         <member name="T:Student.Achieve.Model.Models.Course">
@@ -169,14 +169,14 @@
             姓名
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Students.SubjectA">
+        <member name="P:Student.Achieve.Model.Models.Students.ProDirection">
             <summary>
-            学科一
+            专业方向
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Students.SubjectB">
+        <member name="P:Student.Achieve.Model.Models.Students.CGPA">
             <summary>
-            学科二
+            绩点
             </summary>
         </member>
         <member name="P:Student.Achieve.Model.Models.Students.InSchoolSituation">
@@ -317,6 +317,31 @@
         <member name="P:Student.Achieve.Model.Models.Module.Enabled">
             <summary>
             是否激活
+            </summary>
+        </member>
+        <member name="P:Student.Achieve.Model.Models.MParent.IName">
+            <summary>
+            接口名称
+            </summary>
+        </member>
+        <member name="P:Student.Achieve.Model.Models.MParent.LinkUrl">
+            <summary>
+            接口链接
+            </summary>
+        </member>
+        <member name="P:Student.Achieve.Model.Models.MParent.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:Student.Achieve.Model.Models.MParent.CreateBy">
+            <summary>
+            创建者
+            </summary>
+        </member>
+        <member name="P:Student.Achieve.Model.Models.MParent.Enabled">
+            <summary>
+            状态
             </summary>
         </member>
         <member name="T:Student.Achieve.Model.Models.Permission">

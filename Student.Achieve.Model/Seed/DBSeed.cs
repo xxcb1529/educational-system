@@ -31,7 +31,7 @@ namespace Student.Achieve.Model.Models
                     typeof(RoleModulePermission),
                     typeof(SysAdmin),
                     typeof(CCT),
-                    typeof(Clazz),
+                    typeof(Class),
                     typeof(Course),
                     typeof(Exam),
                     typeof(ExamDetail),

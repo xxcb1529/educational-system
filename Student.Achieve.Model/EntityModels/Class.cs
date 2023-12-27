@@ -2,15 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Student.Achieve.Model.Models
 {
     /// <summary>
     /// 班级表
     /// </summary>
-    public class Clazz : RootEntity
+    public class Class : RootEntity
     {
 
         /// <summary>
@@ -31,24 +29,22 @@ namespace Student.Achieve.Model.Models
         public Grade Grade { get; set; } //班级所属年级
 
 
-
-
         /// <summary>
-        /// 级组
+        /// 院系
         /// </summary>
         [SugarColumn(Length = 50, IsNullable = true)]
-        public string ClazzLevel { get; set; }//级组
+        public string Department { get; set; }//系别
 
         /// <summary>
-        /// 级长
+        /// 系主任
         /// </summary>
         [SugarColumn(Length = 50, IsNullable = true)]
-        public string Manager { get; set; }//
+        public string DepManager { get; set; }//
         /// <summary>
-        /// 班类
+        /// 专业
         /// </summary>
         [SugarColumn(Length = 50, IsNullable = true)]
-        public string ClazzType { get; set; }//
+        public string Specialized { get; set; }//
 
         /// <summary>
         /// 班主任
@@ -56,10 +52,10 @@ namespace Student.Achieve.Model.Models
         [SugarColumn(Length = 50, IsNullable = true)]
         public string TeacherCharge { get; set; }//
         /// <summary>
-        /// 选科
+        /// 辅导员
         /// </summary>
         [SugarColumn(Length = 50, IsNullable = true)]
-        public string ChooseSub { get; set; }//
+        public string Counsellor { get; set; }//
 
 
         [SugarColumn(IsIgnore = true)]

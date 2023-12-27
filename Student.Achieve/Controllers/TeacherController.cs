@@ -22,12 +22,12 @@ namespace Student.Achieve.Controllers
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly IGradeRepository _iGradeRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly ICourseRepository _iCourseRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
-        public TeacherController(ITeacherRepository iTeacherRepository, ICCTRepository iCCTRepository, IGradeRepository iGradeRepository, IClazzRepository iClazzRepository, ICourseRepository iCourseRepository, IUser iUser)
+        public TeacherController(ITeacherRepository iTeacherRepository, ICCTRepository iCCTRepository, IGradeRepository iGradeRepository, IClassRepository iClazzRepository, ICourseRepository iCourseRepository, IUser iUser)
         {
             this._iTeacherRepository = iTeacherRepository;
             this._iCCTRepository = iCCTRepository;
@@ -68,7 +68,7 @@ namespace Student.Achieve.Controllers
             foreach (var item in cctList)
             {
                 item.grade = gradeList.Where(d => d.Id == item.gradeid).FirstOrDefault();
-                item.clazz = clazzList.Where(d => d.Id == item.clazzid).FirstOrDefault();
+                item.clazz = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
                 item.course = coureseList.Where(d => d.Id == item.courseid).FirstOrDefault();
             }
 
@@ -77,7 +77,7 @@ namespace Student.Achieve.Controllers
                 item.cct = cctList.Where(d => d.teacherid == item.Id).ToList();
                 item.gradeId = (item.cct.FirstOrDefault()?.gradeid).ObjToInt();
                 item.courseId = (item.cct.FirstOrDefault()?.courseid).ObjToInt();
-                item.clazzIds = item.cct.Select(d => d.clazzid).ToArray();
+                item.clazzIds = item.cct.Select(d => d.classid).ToArray();
             }
 
             return new MessageModel<PageModel<Teacher>>()
@@ -124,7 +124,7 @@ namespace Student.Achieve.Controllers
                                   select new CCT
                                   {
                                       IsDeleted = false,
-                                      clazzid = item,
+                                      classid = item,
                                       courseid = Teacher.courseId,
                                       teacherid = id,
                                       gradeid = Teacher.gradeId,
@@ -162,7 +162,7 @@ namespace Student.Achieve.Controllers
                                       select new CCT
                                       {
                                           IsDeleted = false,
-                                          clazzid = item,
+                                          classid = item,
                                           courseid = Teacher.courseId,
                                           teacherid = Teacher.Id,
                                           gradeid = Teacher.gradeId,

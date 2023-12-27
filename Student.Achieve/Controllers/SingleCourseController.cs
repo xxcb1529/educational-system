@@ -23,14 +23,14 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
-        public SingleCourseController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository)
+        public SingleCourseController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClassRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -77,11 +77,11 @@ namespace Student.Achieve.Controllers
                 try
                 {
                     exscore.exam = examList.Where(d => d.Id == exscore.examid).FirstOrDefault();
-                    var teacherid = cctList.Where(d => d.clazzid == exscore.clazzid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
+                    var teacherid = cctList.Where(d => d.classid == exscore.classid && d.gradeid == exscore.exam.gradeid && d.courseid == exscore.exam.courseid).FirstOrDefault()?.teacherid;
                     exscore.Teacher = teachersList.Where(d => d.Id == teacherid.ObjToInt()).FirstOrDefault()?.Name;
 
 
-                    exscore.clazz = clazzList.Where(d => d.Id == exscore.clazzid).FirstOrDefault();
+                    exscore.clazz = clazzList.Where(d => d.Id == exscore.classid).FirstOrDefault();
                     exscore.student = studentsList.Where(d => d.Id == exscore.studentid).FirstOrDefault();
                 }
                 catch (Exception ex)
@@ -271,11 +271,11 @@ namespace Student.Achieve.Controllers
             // ↑↑↑四科参考分↑↑↑
 
 
-            var clazzids = clazzList.Where(d => d.GradeId == GradeId).GroupBy(x => new { x.Id }).Select(s => s.First()).ToList();
+            var classids = clazzList.Where(d => d.GradeId == GradeId).GroupBy(x => new { x.Id }).Select(s => s.First()).ToList();
 
             List<SingleCourse> dataSC = new List<SingleCourse>();
 
-            foreach (var item in clazzids)
+            foreach (var item in classids)
             {
                 var totalGradeSingleCoursesClazz = totalGradeSingleCourses.Where(d => d.Clazzid == item.Id).ToList();
                 totalGradeSingleCoursesClazz = totalGradeSingleCoursesClazz.OrderByDescending(d => d.TotalScore).ToList();

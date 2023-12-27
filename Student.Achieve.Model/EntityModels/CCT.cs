@@ -1,9 +1,6 @@
 ﻿using SqlSugar;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Student.Achieve.Model.Models
 {
@@ -21,9 +18,9 @@ namespace Student.Achieve.Model.Models
 
 
         [SugarColumn(IsIgnore = true)]
-        public Clazz clazz { get; set; } //班级
+        public Class clazz { get; set; } //班级
 
-        public int clazzid { get; set; } //班级ID
+        public int classid { get; set; } //班级ID
 
 
 

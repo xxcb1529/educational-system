@@ -20,7 +20,7 @@ namespace Student.Achieve.Controllers
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IExamRepository _iExamRepository;
         private readonly ICourseRepository _iCourseRepository;
-        private readonly IClazzRepository _iClazzRepository;
+        private readonly IClassRepository _iClazzRepository;
         private readonly IGradeRepository _iGradeRepository;
         private readonly ICCTRepository _iCCTRepository;
         private readonly ITeacherRepository _iTeacherRepository;
@@ -29,7 +29,7 @@ namespace Student.Achieve.Controllers
         private readonly IUser _iUser;
         private int GID = 0;
 
-        public ObjectiveController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClazzRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
+        public ObjectiveController(IExScoreRepository iExScoreRepository, IStudentsRepository iStudentsRepository, IExamRepository iExamRepository, ICourseRepository iCourseRepository, IClassRepository iClazzRepository, IGradeRepository iGradeRepository, IUser iUser, ICCTRepository iCCTRepository, ITeacherRepository iTeacherRepository, IExamDetailRepository iExamDetailRepository, IExamDetailScoreRepository iExamDetailScoreRepository)
         {
             this._iExScoreRepository = iExScoreRepository;
             this._iStudentsRepository = iStudentsRepository;
@@ -86,7 +86,7 @@ namespace Student.Achieve.Controllers
             // 如果选中班级，则是部分学生
             if (ClazzId > 0)
             {
-                studentsList = studentsList.Where(d => d.gradeid == GradeId && d.clazzid == ClazzId).ToList();
+                studentsList = studentsList.Where(d => d.gradeid == GradeId && d.classid == ClazzId).ToList();
             }
 
             var lookStudentIds = studentsList.Select(d => d.Id).ToList();
