@@ -173,8 +173,9 @@ namespace Student.Achieve.Controllers
                     parents = allPermissions.FirstOrDefault(d => d.Id == parents.Pid);
                 }
 
-
                 parent.PidArr = pidarr.OrderBy(d => d).Distinct().ToList();
+
+
                 foreach (var pid in parent.PidArr)
                 {
                     var per = allPermissions.FirstOrDefault(d => d.Id == pid);
@@ -196,8 +197,9 @@ namespace Student.Achieve.Controllers
                     Enabled = parent.Enabled,
                     MName = apis.FirstOrDefault(d => d.Id == parent.Mid)?.LinkUrl,
                     CreateTime = parent.CreateTime.ToString(),
-                    PnameArr = parent.PnameArr
-                };
+                    PnameArr = parent.PnameArr,
+                    PidArr = pidarr.OrderBy(d => d).Distinct().ToList()
+            };
                 PopulateChildren(permissionNode, allPermissions,apis);
                 permissionNodes.Add(permissionNode);
             }
@@ -218,6 +220,7 @@ namespace Student.Achieve.Controllers
             public bool? IsHide { get; set; } = false;
             public bool? IsAuth { get; set; } = true;
             public int Pid { get; set; }
+            public List<int> PidArr { get; set; }
             public int Mid { get; set; }
             public int OrderSort { get; set; }
             public string Icon { get; set; }
@@ -279,7 +282,8 @@ namespace Student.Achieve.Controllers
                     Enabled = childPermission.Enabled,
                     MName = Apis.FirstOrDefault(d => d.Id == childPermission.Mid)?.LinkUrl,
                     CreateTime = childPermission.CreateTime.ToString(),
-                    PnameArr = childPermission.PnameArr
+                    PnameArr = childPermission.PnameArr,
+                    PidArr = pidarr.OrderBy(d => d).Distinct().ToList()
                 };
                 PopulateChildren(childNode, allPermissions, Apis);
                 parentNode.children.Add(childNode);

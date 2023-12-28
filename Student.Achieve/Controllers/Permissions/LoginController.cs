@@ -168,7 +168,7 @@ namespace Student.Achieve.Controllers
                     var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, user.uLoginName),
                     new Claim(JwtRegisteredClaimNames.Jti, tokenModel.Uid.ObjToString()),
-                    new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(_requirement.Expiration.TotalSeconds).ToString()) };
+                    new Claim(ClaimTypes.Expiration, DateTime.Now.AddDays(_requirement.Expiration.TotalDays).ToString()) };
                     claims.AddRange(userRoles.Split(',').Select(s => new Claim(ClaimTypes.Role, s)));
 
                     //用户标识

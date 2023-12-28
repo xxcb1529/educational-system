@@ -52,18 +52,18 @@ namespace Student.Achieve.Controllers
             var module = await moduleRepository.Query(d => d.Id > 0);
             foreach (var item in module)
             {
-                item.CreateTime = ("2019-01-01").ObjToDate();
+                item.CreateTime = ("2023-12-01").ObjToDate();
             }
             var permissions = await permissionRepository.Query(d => d.Id > 0);
             foreach (var item in permissions)
             {
-                item.CreateTime = ("2019-01-01").ObjToDate();
+                item.CreateTime = ("2023-12-01").ObjToDate();
             }
             var role = await _roleRepository.Query(d => d.Id > 0);
             var rolemoudlepermiss = await roleModulePermissionRepository.Query(d => d.Id > 0);
             foreach (var item in rolemoudlepermiss)
             {
-                item.CreateTime = ("2019-01-01").ObjToDate();
+                item.CreateTime = ("2023-12-01").ObjToDate();
             }
             var admin = await _SysAdminRepository.Query(d => d.uID > 0);
             var userRoles = await _userRoleRepository.Query(d => d.Id > 0);

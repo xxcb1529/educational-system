@@ -36,7 +36,7 @@ namespace Student.Achieve.AuthHelper
             {
                 success = true,
                 token = encodedJwt,
-                expires_in = permissionRequirement.Expiration.TotalSeconds,
+                expires_in = permissionRequirement.Expiration.TotalDays * 24*  60 * 60 * 24,
                 token_type = "Bearer"
             };
             return responseJson;

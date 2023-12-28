@@ -93,7 +93,7 @@ namespace Student.Achieve.Controllers
             };
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<List<Module>> GetChildrenForParent(int parentId)
+        private async Task<List<Module>> GetChildrenForParent(int parentId)
         {
             Expression<Func<Module, bool>> whereExpression = m => m.IsDeleted != true && m.ParentId == parentId;
             var modules = await _moduleRepository.Query(whereExpression);
