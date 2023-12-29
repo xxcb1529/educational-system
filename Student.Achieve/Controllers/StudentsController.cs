@@ -20,16 +20,16 @@ namespace Student.Achieve.Controllers
     {
         private readonly IStudentsRepository _iStudentsRepository;
         private readonly IGradeRepository _iGradeRepository;
-        private readonly IClassRepository _iClazzRepository;
+        private readonly IClassRepository _iClassRepository;
         private readonly IUser _iUser;
         private int GID = 0;
 
 
-        public StudentsController(IStudentsRepository iStudentsRepository, IGradeRepository iGradeRepository, IClassRepository iClazzRepository, IUser iUser)
+        public StudentsController(IStudentsRepository iStudentsRepository, IGradeRepository iGradeRepository, IClassRepository iClassRepository, IUser iUser)
         {
             this._iStudentsRepository = iStudentsRepository;
             this._iGradeRepository = iGradeRepository;
-            this._iClazzRepository = iClazzRepository;
+            this._iClassRepository = iClassRepository;
             GID = (iUser.GetClaimValueByType("GID").FirstOrDefault()).ObjToInt();
         }
 
@@ -51,18 +51,18 @@ namespace Student.Achieve.Controllers
             {
                 page = 1;
             }
-            int intPageSize = 50;
+            int intPageSize = 10;
 
 
             var data = await _iStudentsRepository.QueryPage(a => (a.IsDeleted == false && (a.Name != null && a.Name.Contains(key)))&& (a.gradeid == GID || (GID == -9999 && true)), page, intPageSize, " Id asc ");
 
 
             var gradeList = await _iGradeRepository.Query(d => d.IsDeleted == false);
-            var clazzList = await _iClazzRepository.Query(d => d.IsDeleted == false);
+            var classList = await _iClassRepository.Query(d => d.IsDeleted == false);
 
             foreach (var item in data.data)
             {
-                item.clazz = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
+                item.Class = classList.Where(d => d.Id == item.classid).FirstOrDefault();
                 item.grade = gradeList.Where(d => d.Id == item.gradeid).FirstOrDefault();
             }
 

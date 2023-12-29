@@ -14,7 +14,7 @@ namespace Student.Achieve.Model.Models
     {
 
         [SugarColumn(IsIgnore = true)]
-        public Class clazz { get; set; } //班级
+        public Class Class { get; set; } //班级
 
         public int classid { get; set; } //班级ID
 
