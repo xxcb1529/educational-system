@@ -104,6 +104,7 @@ namespace Student.Achieve.Model.Models
         public int RID { get; set; }
         [SugarColumn(IsIgnore = true)]
         public string RoleName { get; set; }
-
+        [SugarColumn(IsIgnore = true)]
+        public bool logout { get; set; }
     }
 }

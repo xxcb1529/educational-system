@@ -429,6 +429,11 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="T:Student.Achieve.Controllers.HomeDataController">
+            <summary>
+            首页数据
+            </summary>
+        </member>
         <member name="M:Student.Achieve.Controllers.ExcelImportController.GetTeacherDataSetFromExcel(System.String,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{Student.Achieve.Controllers.TCCRoot}@)">
             <summary>
             将教师资料Excel中的内容转换成DataSet
@@ -1198,12 +1203,12 @@
         </member>
         <member name="T:Student.Achieve.Controllers.TeacherController">
             <summary>
-            年级管理
+            教师管理
             </summary>
         </member>
         <member name="M:Student.Achieve.Controllers.TeacherController.Get(System.Int32,System.String)">
             <summary>
-            获取全部年级
+            获取全部教师
             </summary>
             <param name="page"></param>
             <param name="key"></param>
@@ -1211,21 +1216,21 @@
         </member>
         <member name="M:Student.Achieve.Controllers.TeacherController.Post(Student.Achieve.Model.Models.Teacher)">
             <summary>
-            添加一个年级
+            添加一个教师
             </summary>
             <param name="Teacher"></param>
             <returns></returns>
         </member>
         <member name="M:Student.Achieve.Controllers.TeacherController.Put(Student.Achieve.Model.Models.Teacher)">
             <summary>
-            更新年级
+            更新教师
             </summary>
             <param name="Teacher"></param>
             <returns></returns>
         </member>
         <member name="M:Student.Achieve.Controllers.TeacherController.Delete(System.Int32)">
             <summary>
-            删除年级
+            删除教师
             </summary>
             <param name="id"></param>
             <returns></returns>

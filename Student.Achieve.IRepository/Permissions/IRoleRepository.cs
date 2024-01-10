@@ -9,7 +9,7 @@ namespace Student.Achieve.IRepository
 	/// </summary>	
 	public interface IRoleRepository : IBaseRepository<Role>//类名
     {
-
+        Task<string> GetUserRoleNameByRid(int roleId);
         Task<Role> SaveRole(string roleName);
     }
 }

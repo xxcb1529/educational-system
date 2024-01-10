@@ -10,6 +10,7 @@ namespace Student.Achieve.IRepository
 	/// </summary>	
 	public interface IUserRoleRepository : IBaseRepository<UserRole>//类名
     {
+        Task<int> GetRoleIdByUid(int uID);
         Task<UserRole> SaveUserRole(int uid, int rid);
 
 

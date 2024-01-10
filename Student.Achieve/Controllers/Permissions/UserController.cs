@@ -7,6 +7,7 @@ using Student.Achieve.Common.HttpContextUser;
 using Student.Achieve.IRepository;
 using Student.Achieve.Model;
 using Student.Achieve.Model.Models;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -178,6 +179,8 @@ namespace Student.Achieve.Controllers
                     var userinfo = await _SysAdminRepository.QueryById(tokenModel.Uid);
                     if (userinfo != null)
                     {
+                        userinfo.RID = await _userRoleRepository.GetRoleIdByUid(userinfo.uID);
+                        userinfo.RoleName = await _roleRepository.GetUserRoleNameByRid(userinfo.RID);
                         data.response = userinfo;
                         data.success = true;
                         data.msg = "获取成功";
@@ -235,7 +238,10 @@ namespace Student.Achieve.Controllers
                         await _userRoleRepository.Add(new UserRole(SysAdmin.uID, SysAdmin.RID));
                     }
                 }
-
+                if (SysAdmin.logout)
+                {
+                    SysAdmin.uLastErrTime = DateTime.Now;
+                }
                 data.success = await _SysAdminRepository.Update(SysAdmin);
                 if (data.success)
                 {

@@ -8,11 +8,13 @@ using System.Linq;
 using Student.Achieve.Common.Helper;
 using Student.Achieve.Common.HttpContextUser;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using NPOI.Util;
 
 namespace Student.Achieve.Controllers
 {
     /// <summary>
-    /// 年级管理
+    /// 教师管理
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -38,7 +40,7 @@ namespace Student.Achieve.Controllers
         }
 
         /// <summary>
-        /// 获取全部年级
+        /// 获取全部教师
         /// </summary>
         /// <param name="page"></param>
         /// <param name="key"></param>
@@ -55,29 +57,41 @@ namespace Student.Achieve.Controllers
             {
                 page = 1;
             }
-            int intPageSize = 50;
+            int intPageSize = 10;
 
 
             var data = await _iTeacherRepository.QueryPage(a => (a.IsDeleted == false && (a.Name != null && a.Name.Contains(key)))&& (a.gradeId == GID || (GID == -9999 && true)), page, intPageSize, " Id asc ");
 
             var cctList = await _iCCTRepository.Query(d => d.IsDeleted == false);
             var gradeList = await _iGradeRepository.Query(d => d.IsDeleted == false);
-            var clazzList = await _iClazzRepository.Query(d => d.IsDeleted == false);
+            var classList = await _iClazzRepository.Query(d => d.IsDeleted == false);
             var coureseList = await _iCourseRepository.Query(d => d.IsDeleted == false);
-
             foreach (var item in cctList)
             {
                 item.grade = gradeList.Where(d => d.Id == item.gradeid).FirstOrDefault();
-                item.clazz = clazzList.Where(d => d.Id == item.classid).FirstOrDefault();
+                item.clazz = classList.Where(d => d.Id == item.classid).FirstOrDefault();
                 item.course = coureseList.Where(d => d.Id == item.courseid).FirstOrDefault();
             }
 
             foreach (var item in data.data)
             {
                 item.cct = cctList.Where(d => d.teacherid == item.Id).ToList();
-                item.gradeId = (item.cct.FirstOrDefault()?.gradeid).ObjToInt();
-                item.courseId = (item.cct.FirstOrDefault()?.courseid).ObjToInt();
-                item.clazzIds = item.cct.Select(d => d.classid).ToArray();
+                if(item.courseIds == null)
+                {
+                    item.courseIds = string.Empty;
+                }
+                else
+                {
+                    item.courseIds.Split(",").ToList();
+                }
+                if (item.Class_ids == null)
+                {
+                    item.Class_ids = string.Empty;
+                }
+                else
+                {
+                    item.Class_ids.Split(",").ToList();
+                }
             }
 
             return new MessageModel<PageModel<Teacher>>()
@@ -105,7 +119,7 @@ namespace Student.Achieve.Controllers
 
 
         /// <summary>
-        /// 添加一个年级
+        /// 添加一个教师
         /// </summary>
         /// <param name="Teacher"></param>
         /// <returns></returns>
@@ -120,12 +134,12 @@ namespace Student.Achieve.Controllers
             data.success = id > 0;
             if (data.success)
             {
-                List<CCT> cCTs = (from item in Teacher.clazzIds
+                List<CCT> cCTs = (from item in Teacher.Class_ids.ToArray()
                                   select new CCT
                                   {
                                       IsDeleted = false,
                                       classid = item,
-                                      courseid = Teacher.courseId,
+                                      courseid = 0,
                                       teacherid = id,
                                       gradeid = Teacher.gradeId,
                                   }).ToList();
@@ -140,7 +154,7 @@ namespace Student.Achieve.Controllers
         }
 
         /// <summary>
-        /// 更新年级
+        /// 更新教师
         /// </summary>
         /// <param name="Teacher"></param>
         /// <returns></returns>
@@ -157,18 +171,20 @@ namespace Student.Achieve.Controllers
                 {
                     var cctCureent = await _iCCTRepository.Query(d => d.teacherid == Teacher.Id);
                     var deleteSave = await _iCCTRepository.DeleteByIds(cctCureent.Select(d => d.Id.ToString()).ToArray());
+                    if (Teacher.Class_ids.ToArray().Length>0)
+                    {
+                        List<CCT> cCTs = (from item in Teacher.Class_ids.Split(',').Select(int.Parse).ToArray()
+                                          select new CCT
+                                          {
+                                              IsDeleted = false,
+                                              classid = item,
+                                              courseid = 0,
+                                              teacherid = Teacher.Id,
+                                              gradeid = Teacher.gradeId,
+                                          }).ToList();
 
-                    List<CCT> cCTs = (from item in Teacher.clazzIds
-                                      select new CCT
-                                      {
-                                          IsDeleted = false,
-                                          classid = item,
-                                          courseid = Teacher.courseId,
-                                          teacherid = Teacher.Id,
-                                          gradeid = Teacher.gradeId,
-                                      }).ToList();
-
-                    var newDataSave = await _iCCTRepository.Add(cCTs);
+                        var newDataSave = await _iCCTRepository.Add(cCTs);
+                    }
 
                     data.msg = "更新成功";
                     data.response = Teacher?.Id.ObjToString();
@@ -179,7 +195,7 @@ namespace Student.Achieve.Controllers
         }
 
         /// <summary>
-        /// 删除年级
+        /// 删除教师
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

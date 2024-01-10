@@ -3,6 +3,7 @@ using Student.Achieve.Model.Models;
 using Student.Achieve.IRepository;
 using System.Threading.Tasks;
 using System.Linq;
+using StackExchange.Redis;
 
 namespace Student.Achieve.Repository
 {
@@ -36,6 +37,16 @@ namespace Student.Achieve.Repository
 
             return model;
 
+        }
+        public async Task<int> GetRoleIdByUid(int uID)
+        {
+            int rid = 0;
+            var Role =  await base.Query(a => a.UserId == uID);
+            if(Role.Count > 0)
+            {
+                 rid = Role.FirstOrDefault().RoleId;
+            }
+            return rid;
         }
     }
 }

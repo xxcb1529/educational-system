@@ -35,5 +35,15 @@ namespace Student.Achieve.Repository
             return model;
 
         }
+        public async Task<string> GetUserRoleNameByRid(int roleId)
+        {
+            string name = null;
+            var userRole = await base.Query(a => a.Id == roleId);
+            if (userRole.Count > 0)
+            {
+                name = userRole.FirstOrDefault().Name;
+            }
+            return name;
+        }
     }
 }

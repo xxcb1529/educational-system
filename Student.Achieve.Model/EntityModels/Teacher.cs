@@ -46,16 +46,16 @@ namespace Student.Achieve.Model.Models
         public int gradeId { get; set; }
 
         /// <summary>
-        /// 无用：班级id
+        /// 班级id
         /// </summary>
-        [SugarColumn(IsIgnore = true)]
-        public int[] clazzIds { get; set; }
+        [SugarColumn(Length = 255, IsNullable = true)]
+        public string Class_ids { get; set; }
 
         /// <summary>
-        /// 无用：科目id
+        /// 科目id
         /// </summary>
-        [SugarColumn(IsIgnore = true)]
-        public int courseId { get; set; }
+        [SugarColumn(Length = 255, IsNullable = true)]
+        public string courseIds { get; set; }
 
 
     }

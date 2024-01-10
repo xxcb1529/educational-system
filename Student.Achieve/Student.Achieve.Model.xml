@@ -244,14 +244,14 @@
             密码
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Teacher.clazzIds">
+        <member name="P:Student.Achieve.Model.Models.Teacher.Class_ids">
             <summary>
-            无用：班级id
+            班级id
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Teacher.courseId">
+        <member name="P:Student.Achieve.Model.Models.Teacher.courseIds">
             <summary>
-            无用：科目id
+            科目id
             </summary>
         </member>
         <member name="T:Student.Achieve.Model.Models.Module">
