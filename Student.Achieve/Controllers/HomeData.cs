@@ -63,7 +63,7 @@ namespace Student.Achieve.Controllers
 
 
             // 框架信息
-            string backendFramework = "ASP.NET Core 3.1";
+            string backendFramework = "Dotnet6";
             string frontEndFramework = "VUE2";
             string database = "MySQL";
             string UIFramework = "element-ui";

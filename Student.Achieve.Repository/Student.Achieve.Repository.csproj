@@ -6,7 +6,7 @@
     <OutputPath>..\Student.Achieve\bin\Debug\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.1" />
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.3.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Student.Achieve.IRepository\Student.Achieve.IRepository.csproj" />
