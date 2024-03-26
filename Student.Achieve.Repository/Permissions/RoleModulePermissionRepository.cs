@@ -25,7 +25,7 @@ namespace Student.Achieve.Repository
 
         public async Task<List<RoleModulePermission>> WithChildrenModel()
         {
-            var list = await Task.Run(() => Db.Queryable<RoleModulePermission>()
+            var list = await System.Threading.Tasks.Task.Run(() => Db.Queryable<RoleModulePermission>()
                     .Mapper(it => it.Role, it => it.RoleId)
                     .Mapper(it => it.Permission, it => it.PermissionId)
                     .Mapper(it => it.Module, it => it.ModuleId).ToList());

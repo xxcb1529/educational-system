@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using NPOI.HSSF.Record;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,15 @@ namespace Student.Achieve.Model.Models
     {
         public UserRole() { }
 
-        public UserRole(int uid, int rid)
+        public UserRole(int uid, int rid, int tId)
         {
             UserId = uid;
             RoleId = rid;
+            TId = tId;
             CreateTime = DateTime.Now;
             IsDeleted = false;
             CreateTime = DateTime.Now;
+            TId = tId;
         }
 
 
@@ -33,6 +36,7 @@ namespace Student.Achieve.Model.Models
         /// 角色ID
         /// </summary>
         public int RoleId { get; set; }
+        public int TId { get; set; }
 
     }
 }

@@ -234,7 +234,7 @@
             姓名
             </summary>
         </member>
-        <member name="P:Student.Achieve.Model.Models.Teacher.Account">
+        <member name="P:Student.Achieve.Model.Models.Teacher.TeacherNo">
             <summary>
             账号
             </summary>

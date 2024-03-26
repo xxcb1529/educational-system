@@ -21,7 +21,7 @@ namespace Student.Achieve.Repository
         /// <returns></returns>
         public async Task<UserRole> SaveUserRole(int uid, int rid)
         {
-            UserRole userRole = new UserRole(uid, rid);
+            UserRole userRole = new UserRole(uid, rid,0);
 
             UserRole model = new UserRole();
             var userList = await base.Query(a => a.UserId == userRole.UserId && a.RoleId == userRole.RoleId);
@@ -47,6 +47,16 @@ namespace Student.Achieve.Repository
                  rid = Role.FirstOrDefault().RoleId;
             }
             return rid;
+        }
+        public async Task<int> GetRoleIdByTid(int uID)
+        {
+            int Tid = 0;
+            var Role = await base.Query(a => a.TId == uID);
+            if (Role.Count > 0)
+            {
+                Tid = Role.FirstOrDefault().RoleId;
+            }
+            return Tid;
         }
     }
 }

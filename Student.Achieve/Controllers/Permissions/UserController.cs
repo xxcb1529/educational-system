@@ -162,10 +162,14 @@ namespace Student.Achieve.Controllers
                         {
                             data.response = new SysAdmin()
                             {
-                                uLoginName = teacherinfo.Account,
+                                uLoginName = teacherinfo.TeacherNo,
                                 uLoginPWD = teacherinfo.Password,
                                 uRealName = teacherinfo.Name,
                                 uID = teacherinfo.Id,
+                                RID = await _userRoleRepository.GetRoleIdByTid(teacherinfo.Id),
+                                RoleName = await _roleRepository.GetUserRoleNameByRid(await _userRoleRepository.GetRoleIdByTid(teacherinfo.Id)),
+                                task_ids = teacherinfo.task_ids,
+                                team_ids = teacherinfo.team_ids
                             };
                             data.success = true;
                             data.msg = "获取成功";
@@ -235,7 +239,7 @@ namespace Student.Achieve.Controllers
                     var usrerole = await _userRoleRepository.Query(d => d.UserId == SysAdmin.uID && d.RoleId == SysAdmin.RID);
                     if (usrerole.Count == 0)
                     {
-                        await _userRoleRepository.Add(new UserRole(SysAdmin.uID, SysAdmin.RID));
+                        await _userRoleRepository.Add(new UserRole(SysAdmin.uID, SysAdmin.RID,0));
                     }
                 }
                 if (SysAdmin.logout)

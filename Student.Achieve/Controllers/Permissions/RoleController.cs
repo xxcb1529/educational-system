@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
+using SqlSugar;
 using Student.Achieve.IRepository;
 using Student.Achieve.Model;
 using Student.Achieve.Model.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using static Student.Achieve.Controllers.TaskController;
 
 namespace Student.Achieve.Controllers
 {
@@ -53,6 +59,36 @@ namespace Student.Achieve.Controllers
                 response = data
             };
 
+        }
+
+        [HttpGet]
+        public async Task<MessageModel<List<JRole>>> GetAllRoles()
+        {
+            try
+            {
+                var data = await _roleRepository.Query();
+                var roles = data.Select(r => new JRole { value = r.Id, label = r.Name }).ToList();
+                return new MessageModel<List<JRole>>()
+                {
+                    msg = "成功获取",
+                    success= true,
+                    response = roles
+                };
+            }
+            catch(Exception ex)
+            {
+                return new MessageModel<List<JRole>>()
+                {
+                    msg = $"获取失败: {ex.Message}",
+                    success = false,
+                    response= null
+                };
+            }
+        }
+        public class JRole
+        {
+            public int value;
+            public string label;
         }
 
         // GET: api/User/5

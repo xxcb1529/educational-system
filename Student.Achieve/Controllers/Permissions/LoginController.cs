@@ -28,7 +28,6 @@ namespace Student.Achieve.Controllers
         private readonly ITeacherRepository _iTeacherRepository;
         private readonly IRoleModulePermissionRepository _roleModulePermissionRepository;
 
-
         /// <summary>
         /// 构造函数注入
         /// </summary>
@@ -75,7 +74,7 @@ namespace Student.Achieve.Controllers
             pass = MD5Helper.MD5Encrypt32(pass);
 
             var user = await _SysAdminRepository.Query(d => d.uLoginName == name && d.uLoginPWD == pass);
-            var teacher = await _iTeacherRepository.Query(d => d.Account == name && d.Password == pass);
+            var teacher = await _iTeacherRepository.Query(d => d.TeacherNo == name && d.Password == pass);
 
             var data = await _roleModulePermissionRepository.RoleModuleMaps();
             var list = new List<PermissionItem>();
@@ -110,7 +109,7 @@ namespace Student.Achieve.Controllers
                 var token = JwtToken.BuildJwtToken(claims.ToArray(), _requirement);
                 return new JsonResult(token);
             } else if (teacher.Count>0) {
-                var userRoles = "Teacher_Role";//单独手写教师权限
+                var userRoles = await _iTeacherRepository.GetTeacherRoleNameStr(name, pass);;//单独手写教师权限
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, name),
                     new Claim(JwtRegisteredClaimNames.Jti, teacher.FirstOrDefault().Id.ToString()),

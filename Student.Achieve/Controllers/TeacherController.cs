@@ -9,7 +9,7 @@ using Student.Achieve.Common.Helper;
 using Student.Achieve.Common.HttpContextUser;
 using Microsoft.AspNetCore.Authorization;
 using System;
-using NPOI.Util;
+using static Student.Achieve.Controllers.TaskController;
 
 namespace Student.Achieve.Controllers
 {
@@ -27,15 +27,17 @@ namespace Student.Achieve.Controllers
         private readonly IClassRepository _iClazzRepository;
         private readonly ICourseRepository _iCourseRepository;
         private readonly IUser _iUser;
+        private readonly IUserRoleRepository _iUserRoleRepository;
         private int GID = 0;
 
-        public TeacherController(ITeacherRepository iTeacherRepository, ICCTRepository iCCTRepository, IGradeRepository iGradeRepository, IClassRepository iClazzRepository, ICourseRepository iCourseRepository, IUser iUser)
+        public TeacherController(IUserRoleRepository iUserRoleRepository, ITeacherRepository iTeacherRepository, ICCTRepository iCCTRepository, IGradeRepository iGradeRepository, IClassRepository iClazzRepository, ICourseRepository iCourseRepository, IUser iUser)
         {
             this._iTeacherRepository = iTeacherRepository;
             this._iCCTRepository = iCCTRepository;
             this._iGradeRepository = iGradeRepository;
             this._iClazzRepository = iClazzRepository;
             this._iCourseRepository = iCourseRepository;
+            _iUserRoleRepository = iUserRoleRepository;
             GID = (iUser.GetClaimValueByType("GID").FirstOrDefault()).ObjToInt();
         }
 
@@ -72,11 +74,15 @@ namespace Student.Achieve.Controllers
                 item.clazz = classList.Where(d => d.Id == item.classid).FirstOrDefault();
                 item.course = coureseList.Where(d => d.Id == item.courseid).FirstOrDefault();
             }
-
+            var ur = await _iUserRoleRepository.Query(d => d.IsDeleted == false);
             foreach (var item in data.data)
             {
                 item.cct = cctList.Where(d => d.teacherid == item.Id).ToList();
-                if(item.courseIds == null)
+                var roleId = (from rt in ur
+                              where rt.TId == item.Id // 假设 item.Id 是教师的 ID
+                              select rt.RoleId).FirstOrDefault();
+                item.role_id = roleId;
+                if (item.courseIds == null)
                 {
                     item.courseIds = string.Empty;
                 }
@@ -127,30 +133,45 @@ namespace Student.Achieve.Controllers
         [HttpPost]
         public async Task<MessageModel<string>> Post([FromBody] Teacher Teacher)
         {
-            var data = new MessageModel<string>();
-            Teacher.Password = MD5Helper.MD5Encrypt32(Teacher.Account);
-            var id = await _iTeacherRepository.Add(Teacher);
-
-            data.success = id > 0;
-            if (data.success)
+            try
             {
-                List<CCT> cCTs = (from item in Teacher.Class_ids.ToArray()
-                                  select new CCT
-                                  {
-                                      IsDeleted = false,
-                                      classid = item,
-                                      courseid = 0,
-                                      teacherid = id,
-                                      gradeid = Teacher.gradeId,
-                                  }).ToList();
+                var data = new MessageModel<string>();
+                Teacher.Password = MD5Helper.MD5Encrypt32(Teacher.TeacherNo);
+                var id = await _iTeacherRepository.Add(Teacher);
 
-                var newDataSave = await _iCCTRepository.Add(cCTs);
+                data.success = id > 0;
+                if (data.success)
+                {
+                    List<CCT> cCTs = (from item in Teacher.Class_ids.Split(',').Select(int.Parse).ToArray()
+                                      select new CCT
+                                      {
+                                          IsDeleted = false,
+                                          classid = item,
+                                          courseid = 0,
+                                          teacherid = id,
+                                          gradeid = Teacher.gradeId,
+                                      }).ToList();
+                    var role = new UserRole() { 
+                        TId = id,
+                        RoleId = Teacher.role_id,
+                        UserId = 0,
+                    };
+                    var newDataSave = await _iCCTRepository.Add(cCTs);
+                    var newDataSave2 = await _iUserRoleRepository.Add(role);
+                    data.response = id.ObjToString();
+                    data.msg = "添加成功";
+                }
 
-                data.response = id.ObjToString();
-                data.msg = "添加成功";
+                return data;
             }
-
-            return data;
+            catch (Exception ex)
+            {
+                return new MessageModel<string>
+                {
+                    msg = $"添加失败: {ex.Message}"
+                };
+            }
+            
         }
 
         /// <summary>
@@ -171,6 +192,7 @@ namespace Student.Achieve.Controllers
                 {
                     var cctCureent = await _iCCTRepository.Query(d => d.teacherid == Teacher.Id);
                     var deleteSave = await _iCCTRepository.DeleteByIds(cctCureent.Select(d => d.Id.ToString()).ToArray());
+                    var URId = (await _iUserRoleRepository.Query(ur => ur.TId == Teacher.Id)).First().Id;
                     if (Teacher.Class_ids.ToArray().Length>0)
                     {
                         List<CCT> cCTs = (from item in Teacher.Class_ids.Split(',').Select(int.Parse).ToArray()
@@ -182,8 +204,16 @@ namespace Student.Achieve.Controllers
                                               teacherid = Teacher.Id,
                                               gradeid = Teacher.gradeId,
                                           }).ToList();
+                        var role = new UserRole()
+                        {
+                            Id = URId,
+                            TId = Teacher.Id,
+                            RoleId = Teacher.role_id,
+                            UserId = 0,
+                        };
 
                         var newDataSave = await _iCCTRepository.Add(cCTs);
+                        var newDataSave2 = await _iUserRoleRepository.Update(role);
                     }
 
                     data.msg = "更新成功";

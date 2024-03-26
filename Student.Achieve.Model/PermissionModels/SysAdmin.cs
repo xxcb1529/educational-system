@@ -25,7 +25,8 @@ namespace Student.Achieve.Model.Models
             uLastErrTime = DateTime.Now;
             uErrorCount = 0;
             name = "";
-
+            task_ids = "";
+            team_ids = "";
         }
         /// <summary>
         /// 用户ID
@@ -82,6 +83,9 @@ namespace Student.Achieve.Model.Models
         /// </summary>
         [SugarColumn(Length = 60, IsNullable = true)]
         public string name { get; set; }
+
+        public string task_ids;
+        public string team_ids;
 
         // 性别
         [SugarColumn(IsNullable = true)]

@@ -12,7 +12,7 @@ namespace Student.Achieve.IRepository
     {
         Task<int> GetRoleIdByUid(int uID);
         Task<UserRole> SaveUserRole(int uid, int rid);
-
+        Task<int> GetRoleIdByTid(int uID);
 
     }
 }

@@ -16,7 +16,7 @@ namespace Student.Achieve.Model.Models
         /// </summary>
         /// <param name="myContext"></param>
         /// <returns></returns>
-        public static async Task SeedAsync(MyContext myContext)
+        public static async System.Threading.Tasks.Task SeedAsync(MyContext myContext)
         {
             try
             {

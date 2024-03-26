@@ -57,6 +57,11 @@ namespace Student.Achieve.Model.Models
         [SugarColumn(Length = 255, IsNullable = true)]
         public string courseIds { get; set; }
 
+        [SugarColumn(Length = 255, IsNullable = true)]
+        public string team_ids { get; set; }
 
+        [SugarColumn(Length = 255, IsNullable = true)]
+        public string task_ids { get; set; }
+        public int role_id;
     }
 }

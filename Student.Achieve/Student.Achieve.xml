@@ -1201,6 +1201,47 @@
             
             </summary>
         </member>
+        <member name="T:Student.Achieve.Controllers.TaskController">
+            <summary>
+            任务管理
+            </summary>
+        </member>
+        <member name="M:Student.Achieve.Controllers.TaskController.Get(System.String,System.Int32,System.String)">
+            <summary>
+            管理员获取全部（目前teamids无效）
+            </summary>
+            <param name="page"></param>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Student.Achieve.Controllers.TaskController.GetMyTasksByTeamIds(System.String)">
+            <summary>
+            根据参与团队ids获取个人任务
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Student.Achieve.Controllers.TaskController.GetTasksByTeamIds(System.String)">
+            <summary>
+            根据团队ids获取全部团队的任务
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Student.Achieve.Controllers.TaskController.GetJoinTeams(System.String,System.Int32)">
+            <summary>
+            获取参与团队
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Student.Achieve.Controllers.TaskController.Post(Student.Achieve.Model.Models.Task)">
+            <summary>
+            添加任务
+            </summary>
+            /// <param name="task"></param>
+            <returns></returns>
+        </member>
         <member name="T:Student.Achieve.Controllers.TeacherController">
             <summary>
             教师管理
